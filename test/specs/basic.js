@@ -7,6 +7,7 @@ const assert = require('assert');
 describe('Chat status should be unavailable', () => {
     it('The chat should have the right status', () => {
         browser.url('https://elguntors-stg.salesfloor.net/lol56eff3d6ed8b9');
+        browser.maximizeWindow();
         const chat = $('.status__text--is-active').getText();
         //console.log(chat);
         assert.equal(chat, 'Unavailable');
@@ -21,6 +22,7 @@ describe('Checking Chat status color', () => {
     });
 });
 
+/*
 
 describe('Get my Update link', () => {
     it('should have send an email from form ', () => {
@@ -43,45 +45,60 @@ describe('Get my Update link', () => {
     });
 });
 
-/*
+*/
 
 describe('Appointment Request', () => {
     it('The chat status color should be red', () => {
         $('#AtAppointmentLink').click();
 
         browser.switchToFrame(0); // '#bookAnAppointment'
-   
-       // let phone = $('//*[@id="phoneService"]');
-       // phone.click();
 
+        const phoneId = $('/html/body/div[1]/div[1]/div/div[2]/div/form/fieldset/div/div[2]/div/ul/li[2]/label' );
+        phoneId.click();
+   
         // calculating new date ( more 7 days) from current day
-        var someDate = new Date();
+        let someDate = new Date();
+        let todayDate = new Date();
         someDate.setDate(someDate.getDate() + 7); 
         newDate = ""+(someDate.getMonth()+1)+"/"+someDate.getDate()+"/"+ someDate.getFullYear().toString().substring(2);
-        
+        browser.pause(500);
+        $('#choosenDatePlaceholder').click();
+        browser.pause(500);
+        // checing if the new date has the same month or not
+        if (someDate.getMonth() != todayDate.getMonth()) {
+            //if month is different -> click on next month button
+            $('//*[@id="ui-datepicker-div"]/div/a[2]').click();
+        }
+       
+        // find the appointment day and click
+        const foundDay = $('.ui-state-default='+someDate.getDate() );
+        foundDay.click();
 
-        // $("#datepicker").datepicker("setDate", date);
-        // $("#dateselector").datepicker("option", "defaultDate", new Date(2008,9,3));
-
-        // $('#choosenTime').selectByAttribute('value', '10:00 AM');
+        $('#choosenTime').selectByAttribute('value', '10:00 AM');
         $('#name').setValue('Bruce Lee');
         $('#email').setValue('myEmail@test.com');
-        // $('#autoSubscribe').click();
+        $('#autoSubscribe').click();
         $('#phone').setValue('514-999-8877');
         $('#extraInfo').setValue('Extra info inside What can I help you?');
 
-        browser.pause(10000);
+        browser.keys("\uE055"); //PageDown
 
-     
-        // $('/html/body/div[1]/div[1]/div/div[2]/div/form/fieldset/footer/div/button').click();
-        // assert.equal('/html/body/div[1]/div/div[2]/div/form/fieldset/div/footer/div/div/div/span[1]'.getText(), 'Thank you!');
-        // browser.switchToParentFrame();
+        // browser.pause(10000);
+
+   
+        $('/html/body/div[1]/div[1]/div/div[2]/div/form/fieldset/footer/div/button').click();
+
+        const notifApp = $('.global-services__validation__title');
+        notifApp.waitForExist(5000);
+
+        assert.equal(notification.getText(), 'Thank you for your request!');
+
         browser.switchToParentFrame();
 
         
     });
 });
 
-*/
+
 
 
